@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoloV5.ML", "YoloV5.ML\YoloV5.ML.csproj", "{B2707948-0515-4D0A-B35A-D2EE5F9A5517}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YoloV5", "YoloV5.View\YoloV5.csproj", "{CBD1076B-FFF1-445D-B79D-C4D204FF1BB9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2707948-0515-4D0A-B35A-D2EE5F9A5517}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2707948-0515-4D0A-B35A-D2EE5F9A5517}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2707948-0515-4D0A-B35A-D2EE5F9A5517}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2707948-0515-4D0A-B35A-D2EE5F9A5517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBD1076B-FFF1-445D-B79D-C4D204FF1BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD1076B-FFF1-445D-B79D-C4D204FF1BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD1076B-FFF1-445D-B79D-C4D204FF1BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD1076B-FFF1-445D-B79D-C4D204FF1BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C7642C6-50FE-419E-ACD5-8B32E578A6D6}
+	EndGlobalSection
+EndGlobal
