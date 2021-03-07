@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using YoloV5.ML;
 using YoloV5.View.ViewModels;
 
 namespace YoloV5.View
@@ -17,8 +18,7 @@ namespace YoloV5.View
         {
             if (e.AddedItems.Count > 0)
             {
-                viewModel.SelectedItemChanged(e.AddedItems[0]);
-                
+                viewModel.SelectedItemChanged(e.AddedItems[0] as IBoxInfo);
             }
         }
     }

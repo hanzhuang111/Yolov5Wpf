@@ -13,7 +13,7 @@ namespace YoloV5.ML
         private static Color[] colors;
         private readonly PreProcessing preProcessing;
 
-        public readonly IEnumerable<IBoxInfo> boxesInfo;        // 绘图的结果。
+        public readonly IEnumerable<ITreeViewItemInfo> boxesInfo;        // 绘图的结果。
         public readonly IEnumerable<IBoxInfo> yoloV5Boxes;      // 所有符合要求的结果。
 
         public OutputParser(ModelOutput modelOutput, PreProcessing preProcessing)
@@ -52,6 +52,8 @@ namespace YoloV5.ML
                                 continue;
 
                             var span = new ReadOnlySpan<float>(output, start, VECTOR_LENGTH);
+                            var scores = span.Slice(5, VECTOR_LENGTH - 5).ToArray()
+                                .Select(c => Functions.Sigmoid(c));
                             var vector = new OutputVector
                             {
                                 ObjectConfidence = objectConfidence,
@@ -59,7 +61,7 @@ namespace YoloV5.ML
                                 Y = (Functions.Sigmoid(span[1]) * 2 - 0.5f + row) * stride,
                                 W = MathF.Pow(Functions.Sigmoid(span[2]) * 2, 2) * anchors[channel].width,
                                 H = MathF.Pow(Functions.Sigmoid(span[3]) * 2, 2) * anchors[channel].height,
-                                ClassScores = Functions.Softmax(span.Slice(5, 80).ToArray())
+                                ClassScores = scores.ToArray()
                             };
 
                             if (vector.ClassMaxScore >= Params.ConfidenceThreshold)
@@ -91,12 +93,10 @@ namespace YoloV5.ML
                 {
                     results.Add(new YoloBox
                     {
-                        ObjectID = v1.ObjectId,
                         Position = MappingPosition(v1.Position),
                         Title = Params.Names[v1.ObjectId],
                         Color = GetColor(v1.ObjectId),
                         Score = v1.ClassMaxScore,
-                        Count = 1
                     });
                     if (results.Count >= Params.BoxCountLimit)
                         break;

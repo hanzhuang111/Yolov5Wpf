@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using YoloV5.ML;
+using System.Linq;
 
 namespace YoloV5.View.ViewModels
 {
@@ -31,15 +32,22 @@ namespace YoloV5.View.ViewModels
             SaveOutputCommand = new DelegateCommand(SaveOutput);
             LoadImageCommand = new DelegateCommand(LoadImage);
             ModelPredictCommand = new DelegateCommand(ModelPredict);
+            DrawSelectionCommand = new DelegateCommand(DrawSelectiion);
         }
 
-        public void SelectedItemChanged(object item)
+        private void DrawSelectiion()
         {
-            if(item is YoloBox box)
+            if(currentParser.yoloV5Boxes.Count() > 0)
             {
-                Functions.Draw(currentPreProcessing, currentParser.yoloV5Boxes, box.Title);
+                Functions.Draw(currentPreProcessing, currentParser.yoloV5Boxes, DrawItemTitle);
                 OutputSource = currentPreProcessing.outputBitmap.ToBitmapSource();
             }
+        }
+
+        public void SelectedItemChanged(IBoxInfo item)
+        {
+            Functions.Draw(currentPreProcessing, currentParser.yoloV5Boxes, item);
+            OutputSource = currentPreProcessing.outputBitmap.ToBitmapSource();
         }
 
         private void ModelPredict()
@@ -181,6 +189,8 @@ namespace YoloV5.View.ViewModels
         public DelegateCommand SaveOutputCommand { get; }
         public DelegateCommand LoadImageCommand { get; }
         public DelegateCommand ModelPredictCommand { get; }
+        public DelegateCommand DrawSelectionCommand { get; }    
+
 
 
         private string _loadModelButtonState = "加载模型";
@@ -232,6 +242,12 @@ namespace YoloV5.View.ViewModels
             set => SetProperty(ref _loadingModelResultColor, value);
         }
 
-        public ObservableCollection<IBoxInfo> ViewItems { get; } = new ObservableCollection<IBoxInfo>();
+        private string _drawItemTitle;
+        public string DrawItemTitle
+        {
+            get => _drawItemTitle;
+            set => SetProperty(ref _drawItemTitle, value);
+        }
+        public ObservableCollection<ITreeViewItemInfo> ViewItems { get; } = new ObservableCollection<ITreeViewItemInfo>();
     }
 }

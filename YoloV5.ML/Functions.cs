@@ -14,15 +14,6 @@ namespace YoloV5.ML
             return MathF.Exp(x) / (1 + MathF.Exp(x));
         }
 
-        public static float[] Softmax(float[] values)
-        {
-            var maxVal = values.Max();
-            var exp = values.Select(v => MathF.Exp(v - maxVal));
-            var sumExp = exp.Sum();
-
-            return exp.Select(e => e / sumExp).ToArray();
-        }
-
         public static float IoU(OutputVector v1, OutputVector v2)
         {
             float x1 = Math.Max(v1.X, v2.X);
@@ -35,31 +26,65 @@ namespace YoloV5.ML
             return iou;
         }
 
-        public static IEnumerable<IBoxInfo> Draw(PreProcessing preProcessing, IEnumerable<IBoxInfo> yoloBoxes, string title = null)
+        public static void Draw(PreProcessing preProcessing, IEnumerable<IBoxInfo> yoloBoxes, string title)
+        {
+            preProcessing.outputBitmap = (Bitmap)preProcessing.originalBitmap.Clone();
+            using var g = Graphics.FromImage(preProcessing.outputBitmap);
+            var boxes = yoloBoxes.Where(b => b.Title == title);
+            foreach(var box in boxes)
+            {
+                var pen = new Pen(box.Color, (float)Settings.Params.PenWidth);
+                g.DrawRectangle(pen, box.Position);
+            }
+        }
+
+        public static void Draw(PreProcessing preProcessing, IEnumerable<IBoxInfo> yoloBoxes, IBoxInfo selected)
+        {
+            if(selected is not null)
+            {
+                preProcessing.outputBitmap = (Bitmap)preProcessing.originalBitmap.Clone();
+                using var g = Graphics.FromImage(preProcessing.outputBitmap);
+                var boxes = yoloBoxes.Where(b => b.Position == selected.Position && b.Title == selected.Title);
+                foreach (var box in boxes)
+                {
+                    var pen = new Pen(box.Color, (float)Settings.Params.PenWidth);
+                    g.DrawRectangle(pen, box.Position);
+                }
+            }
+        }
+        public static IEnumerable<ITreeViewItemInfo> Draw(PreProcessing preProcessing, IEnumerable<IBoxInfo> yoloBoxes)
         {
             preProcessing.outputBitmap = (Bitmap)preProcessing.originalBitmap.Clone();
             using var g = Graphics.FromImage(preProcessing.outputBitmap);
 
-            var result = new List<IBoxInfo>();
+            var result = new List<ITreeViewItemInfo>();
             foreach(var box in yoloBoxes)
             {
-                if(!string.IsNullOrEmpty(title))
+                if (result.Find(b => b.Title == box.Title) is ITreeViewItemInfo treeViewItemInfo)
                 {
-                    if(box.Title != title)
-                    {
-                        continue;
-                    }
-                }
-                if (result.Find(b => b.Title == box.Title) is YoloBox yoloBox)
-                {
-                    yoloBox.Count++;
+                    treeViewItemInfo.Count++;
+                    treeViewItemInfo.Boxes.Add(box);
                 }
                 else
                 {
-                    result.Add(box);
+                    var info = new TreeViewInfo
+                    {
+                        Boxes = new List<IBoxInfo>(),
+                        Count = 1,
+                        Title = box.Title,
+                        Color = box.Color
+                    };
+                    info.Boxes.Add(box);
+                    result.Add(info);
                 }
                 var pen = new Pen(box.Color, (float)Settings.Params.PenWidth);
                 g.DrawRectangle(pen, box.Position);
+            }
+            var comparer = new Comparison<IBoxInfo>((x, y) =>
+                x.Position.X.CompareTo(y.Position.X));
+            foreach(var r in result)
+            {
+                r.Boxes.Sort(comparer);
             }
 
             return result;

@@ -12,11 +12,10 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="13*" />
-            <ColumnDefinition Width="47*"/>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="210" />
         </Grid.ColumnDefinitions>
-        <Grid Grid.ColumnSpan="2" >
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="45"/>
                 <RowDefinition Height="*" />
@@ -52,23 +51,34 @@
 
         <DockPanel Margin="10,10,10,10" Grid.Column="2" LastChildFill="True">
             <Button Content="加载图片" Command="{Binding LoadImageCommand}" Margin="0 0 0 10" DockPanel.Dock="Top"/>
-            <Button Content="模型预测" Command="{Binding ModelPredictCommand}" Margin="0 0 0 20" DockPanel.Dock="Top"/>
-            <ListView ItemsSource="{Binding ViewItems}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged">
-                <ListView.ItemTemplate>
+            <Button Content="模型预测" Command="{Binding ModelPredictCommand}" Margin="0 0 0 10" DockPanel.Dock="Top"/>
+            <DockPanel LastChildFill="True" DockPanel.Dock="Top" Margin="0 0 0 10">
+                <Button Content="显示" Width="40" DockPanel.Dock="Left" Command="{Binding DrawSelectionCommand}"/>
+                <TextBox Margin="10 0 0 0" Text="{Binding DrawItemTitle}"/>
+            </DockPanel>
+            <TreeView ItemsSource="{Binding ViewItems}" BorderThickness="0">
+                <TreeView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="2"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Ellipse Width="16" Height="16" Fill="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="4" Text="{Binding Description}" FontSize="14" FontFamily="华文新魏" 
-                                       Foreground="Black" VerticalAlignment="Center"/>
-                        </Grid>
+                        <TreeViewItem>
+                            <TreeViewItem.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="2"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse Width="16" Height="16" Fill="{Binding Color, Converter={StaticResource ColorToSolidBrushConverter}}" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding }" FontSize="14" FontFamily="华文新魏" 
+	                                           Foreground="Black" VerticalAlignment="Center"/>
+                                </Grid>
+                            </TreeViewItem.Header>
+                            <ListView  ItemsSource="{Binding Boxes}" BorderThickness="0" SelectionChanged="ListView_SelectionChanged">
+                                
+                            </ListView>
+                        </TreeViewItem>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </TreeView.ItemTemplate>
+            </TreeView>
         </DockPanel>
     </Grid>
 </Window>
